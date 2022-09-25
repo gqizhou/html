@@ -1,0 +1,43 @@
+<html>
+    <head>
+        <title>MONITER</title>
+    </head>
+    <body>
+        <h2 id='s'>连接中......</h2>
+        <div id="t"></div>
+        <script>
+            var sock = null;
+            var wsuri = "ws://159.138.38.242:6699"; 
+            var msgCnt = [];
+
+            window.onload = function() {
+                console.log("onload");
+                sock = new WebSocket(wsuri);
+                sock.onopen = function() {
+                    console.log("connected to " + wsuri);
+                    document.getElementById("s").innerHTML = '连接成功!'
+                }
+
+                sock.onclose = function(e) {
+                    console.log("connection closed (" + e.code + ")");
+                    alert("connection closed")
+                    document.getElementById("s").innerHTML = '连接断开!'
+                }
+
+                sock.onmessage = function(e) {
+                    if (e.data) {
+                        msgCnt.push(e.data)
+                        if (msgCnt.length > 100){
+                            msgCnt.shift()
+                        }
+                        let dv = ""
+                        for (let i = msgCnt.length - 1;i > 0;i--){
+                            dv = dv + '<p>' + msgCnt[i] + '</p>'
+                        }
+                        document.getElementById("t").innerHTML = dv;
+                    }
+                }
+            };
+        </script>
+    </body>
+</html>
